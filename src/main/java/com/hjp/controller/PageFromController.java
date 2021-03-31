@@ -1,6 +1,7 @@
 package com.hjp.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -69,6 +70,12 @@ public class PageFromController {
 
     @RequestMapping("/documentationAdd")
     public String documentationAdd(){
+
+        return "documentationAdd";
+    }
+
+    @RequestMapping("/docAdd/{typeId}")
+    public String docAdd(@PathVariable Integer typeId){
 
         return "documentationAdd";
     }

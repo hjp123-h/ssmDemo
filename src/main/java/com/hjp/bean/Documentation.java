@@ -23,7 +23,11 @@ public class Documentation {
 
     private String file;
 
+    private String typename;
+
     private String typeid;
+
+    private String username;
 
     private String userid;
 

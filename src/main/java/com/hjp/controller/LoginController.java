@@ -75,27 +75,22 @@ public class LoginController {
 
         String userName = request.getParameter("formName");
         String password = request.getParameter("password");
-        String phone = request.getParameter("phone");
-
-        if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) && StringUtils.isNotBlank(phone)){
-            boolean regist = loginService.regist(userName, password, phone);
-
-            if (regist){
-
-                try {
-                    response.sendRedirect("/login");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return "login";
-            }
-        }
-
+        Long phone = null;
+        //手机号不为数字时报错返回
         try {
-            response.sendRedirect("/regist");
-        } catch (IOException e) {
+            phone = Long.valueOf(request.getParameter("phone"));
+        } catch (NumberFormatException e) {
             e.printStackTrace();
+            return "regist";
         }
-        return "login";
+
+        if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) && phone != 0){
+            loginService.regist(userName, password, phone);
+
+            return "login";
+
+        }
+
+        return "regist";
     }
 }

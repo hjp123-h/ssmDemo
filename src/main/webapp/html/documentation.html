@@ -22,6 +22,8 @@
 
 		var zNodes = [];
 
+		var typeGlobalID = "1";
+
 		getAll();
 
 		var setting = {
@@ -197,7 +199,21 @@
 
 			var id = treeNode.id;
 
+			typeGlobalID = id;
+
 			var url = "/documentationList/"+id+"/"+page;
+
+			doPost(url);
+		}
+
+		//新增文档
+		function documentationAdd(){
+
+			var url = location.href
+
+			urls = url.split("/");
+
+			var url = "/docAdd/"+urls[4];
 
 			doPost(url);
 		}
@@ -266,7 +282,7 @@
 
 					<div class="panel-body">
 						<div class="list-op" id="list_op">
-							<button type="button" class="btn btn-default btn-sm" onclick="$(location).attr('href', '/html/documentationAdd.html');" style="margin-left: 789px;">
+							<button type="button" class="btn btn-default btn-sm" onclick="documentationAdd()" style="margin-left: 789px;">
 								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
 							</button>
 						</div>
@@ -282,9 +298,9 @@
 						</tr>
 						</thead>
 						<tr  th:each="info : ${data}" th:if="${data != null}">
-							<td th:text="${info.getId()}"></td>
-							<td th:text="${info.getTypeid()}"></td>
-							<td th:text="${info.getUserid()}"></td>
+							<td th:text="${info.getTitle()}"></td>
+							<td th:text="${info.getTypename()}"></td>
+							<td th:text="${info.getUsername()}"></td>
 							<td th:text="${info.getCreatetime()}"></td>
 							<td>
 								<button type='button' class='btn btn-sm btn-info' >删除</button>

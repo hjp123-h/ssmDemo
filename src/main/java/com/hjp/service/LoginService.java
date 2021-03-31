@@ -10,5 +10,5 @@ public interface LoginService {
 
     public String login(String username,String password);
 
-    public boolean regist(String username,String password,String phone);
+    public boolean regist(String username,String password,Long phone);
 }

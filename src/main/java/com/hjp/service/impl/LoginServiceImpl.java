@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public boolean regist(String username,String password,String phone) {
+    public boolean regist(String username,String password,Long phone) {
 
         QueryWrapper<Users> wrapper = new QueryWrapper<>();
         wrapper.eq(true,"name",username)
