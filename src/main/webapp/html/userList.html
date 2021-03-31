@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>list</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class="container theme-showcase" role="main">
+    <div id="msg"></div>
+    <div class="page-header">
+        <input type="text" id="user-id" name="phones" placeholder="请输入手机号">
+        <button id="query" type="button" class="btn btn-sm btn-primary">查询</button>
+        <button id="add" type="button" class="btn btn-sm btn-success">添加</button>
+        <button id="doc" type="button" class="btn btn-sm btn-success" onclick="doPost('/documentationList/0/1')">文档管理</button>
+    </div>
+    <div class="row">
+        <div class="">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>姓名</th>
+                    <th>手机</th>
+                    <th>生日</th>
+                    <th>注册时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr  th:each="info : ${data}" th:if="${data != null}">
+                    <td th:text="${info.getId()}"></td>
+                    <td th:text="${info.getName()}"></td>
+                    <td th:text="${info.getPhone()}"></td>
+                    <td th:text="${info.getBirthday()}"></td>
+                    <td th:text="${#dates.format(info.getCreatetime(),'yyyy-MM-d HH:mm')}"></td>
+                    <td>
+                        <button type='button' class='btn btn-sm btn-info' th:onclick="|deleteUser(${info.getId()})|">删除</button>
+                        <button type='button' class='btn btn-sm btn-warning' th:onclick="|updateUser(${info.getId()})|">修改</button>
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <nav aria-label="Page navigation" style="text-align: center" th:if="${pagination != null && pagination.getTotalPage() > 0}">
+
+        <ul class="pagination pagination-lg">
+
+            <li th:if="${pagination.showFirstPage}">
+                <a th:href="@{'/students?page=1'}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;&lt;</span>
+                </a>
+            </li>
+            <li th:if="${pagination.showPrevious}">
+                <a th:href="@{'/students?page='+${pagination.page - 1}}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <li th:each="page:${pagination.pages}" th:class="${pagination.page==page}?'active':''">
+                <a th:href="@{'/students?page='+${page}}" th:text="${page}"></a>
+            </li>
+            <li th:if="${pagination.showNext}">
+                <a th:href="@{'/students?page='+${pagination.page + 1}}" aria-label="next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <li th:if="${pagination.showEndPage}">
+                <a th:href="@{'/students?page='+${pagination.totalPage}}" aria-label="next">
+                    <span aria-hidden="true">&gt;&gt;</span>
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script>
+    $(function () {
+
+        $("#query").click(function () {
+            let userId = $("#user-id").val();
+            if(userId != ""){
+                getUserById(userId);
+            }else{
+                window.location.replace('students')
+            }
+
+        });
+
+        //绑定添加按钮的点击事件
+        $("#add").click(function () {
+            $(location).attr('href', '/html/userAdd.html');
+        });
+
+    });
+
+    function getUserById(userId) {
+        window.location.replace('/getByIdStudent/'+userId)
+    }
+
+    //删除
+    function deleteUser(id) {
+
+        $.ajax({
+            url:"/delete/"+id,
+            type:"delete",
+            success:function (result) {
+                //提示信息
+                let msg = '<div class="alert alert-info" role="alert">删除成功!</div>';
+                $('#msg').html(msg);
+
+                setTimeout(function(){
+                    $('#msg').empty();
+                },2000);
+                window.location.replace('students')
+            }
+
+        });
+    }
+
+    //修改
+    function updateUser(userId){
+        $(location).attr('href', '/html/userUpdate.html?id='+userId);
+    }
+
+    //post重定向
+    function doPost(URL) {
+        PARAMS = {'fileName': '1.txt'};
+
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>list</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class="container theme-showcase" role="main">
+    <div id="msg"></div>
+    <div class="page-header">
+        <input type="text" id="user-id" name="phones" placeholder="请输入手机号">
+        <button id="query" type="button" class="btn btn-sm btn-primary">查询</button>
+        <button id="add" type="button" class="btn btn-sm btn-success">添加</button>
+    </div>
+    <div class="row">
+        <div class="">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>姓名</th>
+                    <th>手机</th>
+                    <th>生日</th>
+                    <th>注册时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr  th:each="info : ${data}" th:if="${data != null}">
+                    <td th:text="${info.getId()}"></td>
+                    <td th:text="${info.getName()}"></td>
+                    <td th:text="${info.getPhone()}"></td>
+                    <td th:text="${info.getBirthday()}"></td>
+                    <td th:text="${#dates.format(info.getCreatetime(),'yyyy-MM-d HH:mm')}"></td>
+                    <td>
+                        <button type='button' class='btn btn-sm btn-info' th:onclick="|deleteUser(${info.getId()})|">删除</button>
+                        <button type='button' class='btn btn-sm btn-warning' th:onclick="|updateUser(${info.getId()})|">修改</button>
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script>
+    $(function () {
+
+        $("#query").click(function () {
+            let userId = $("#user-id").val();
+            if(userId != ""){
+                getUserById(userId);
+            }else{
+                window.location.replace('students')
+            }
+
+        });
+
+        //绑定添加按钮的点击事件
+        $("#add").click(function () {
+            $(location).attr('href', '/html/userAdd.html');
+        });
+
+    });
+
+    function getUserById(userId) {
+        $.ajax({
+            url:"/getByIdStudent/"+userId,
+            type:"get",
+            dataType:"json",
+            success:function (result) {
+            }
+        });
+    }
+
+    //删除
+    function deleteUser(id) {
+
+        alert(id);
+
+        $.ajax({
+            url:"/delete/"+id,
+            type:"delete",
+            success:function (result) {
+                //提示信息
+                let msg = '<div class="alert alert-info" role="alert">删除成功!</div>';
+                $('#msg').html(msg);
+
+                setTimeout(function(){
+                    $('#msg').empty();
+                },2000);
+                window.location.replace('students')
+            }
+
+        });
+    }
+
+    //修改
+    function updateUser(userId){
+        $(location).attr('href', '/html/userUpdate.html?id='+userId);
+    }
+
+</script>
+</body>
+</html>
